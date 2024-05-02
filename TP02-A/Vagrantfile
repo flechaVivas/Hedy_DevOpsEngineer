@@ -1,0 +1,20 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/debian12"
+  config.vm.network "public_network"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "8192"
+    vb.name = "vm-arroyito"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+  SHELL
+
+  # Install and configure cloudflared tunnelling
+  config.vm.provision "shell", path: "cloudflared_tunnel.sh"
+
+  # Install dependencies, configure wordpress and deploy
+  config.vm.provision "shell", path: "wordpress_setup.sh"
+end
